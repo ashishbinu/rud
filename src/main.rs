@@ -8,7 +8,7 @@ fn main() {
     println!("{}", meaning);
 }
 
-fn get_meaning(query: &String) -> Result<String, ureq::Error> {
+fn get_meaning(query: &str) -> Result<String, ureq::Error> {
     let html: String =
         ureq::get(format!("https://www.urbandictionary.com/define.php?term={}", query).as_ref())
             .call()?
@@ -16,7 +16,7 @@ fn get_meaning(query: &String) -> Result<String, ureq::Error> {
     let parsed_html = Html::parse_document(&html);
     let selector = &Selector::parse("meta[name='Description']")
         .expect("Error during the parsing using the given selector");
-    let meta_tag = parsed_html.select(&selector).nth(0).unwrap();
+    let meta_tag = parsed_html.select(selector).next().unwrap();
     let meaning = meta_tag.value().attr("content").unwrap().to_string();
     Ok(meaning)
 }
