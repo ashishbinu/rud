@@ -1,10 +1,22 @@
-use std::env;
+use clap::{ArgGroup, Parser};
 
 use scraper::{Html, Selector};
 
+#[derive(Parser)]
+#[clap(version, about)]
+#[clap(group(
+            ArgGroup::new("wd")
+                .required(true)
+                .args(&["word"]),
+        ))]
+struct Args {
+    /// The word to find meaning of
+    word: String,
+}
+
 fn main() {
-    let search_query = env::args().nth(1).unwrap();
-    let meaning = get_meaning(&search_query).unwrap();
+    let args = Args::parse();
+    let meaning = get_meaning(&args.word).unwrap();
     println!("{}", meaning);
 }
 
