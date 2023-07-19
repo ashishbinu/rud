@@ -31,14 +31,13 @@ struct UDDefinitions {
 
 fn get_meaning(query: &str) -> Result<String> {
     let url = format!("https://api.urbandictionary.com/v0/define?term={}", query);
-    let json: String = ureq::get(&url)
+    let response = ureq::get(&url)
         .call()
         .map_err(|e| anyhow!("Failed to fetch the URL: {:?}", e))?
-        .into_string()
-        .map_err(|e| anyhow!("Failed to parse the response: {:?}", e))?;
+        .into_reader();
 
-    let parsed_json: UDDefinitions =
-        serde_json::from_str(&json).map_err(|e| anyhow!("Failed to parse the json: {:?}", e))?;
+    let parsed_json: UDDefinitions = serde_json::from_reader(response)
+        .map_err(|e| anyhow!("Failed to parse the json: {:?}", e))?;
     // return the first definition found
     parsed_json
         .list
