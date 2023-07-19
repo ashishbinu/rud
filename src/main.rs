@@ -44,6 +44,6 @@ fn get_meaning(query: &str) -> Result<String> {
         .list
         .into_iter()
         .next()
-        .map(|d| d.definition.clone())
+        .map(|d| d.definition)
         .ok_or_else(|| anyhow!("Definition not found"))
 }
